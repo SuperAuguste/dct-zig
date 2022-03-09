@@ -11,24 +11,31 @@ pub fn build(b: *std.build.Builder) void {
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
 
-    const exe = b.addExecutable("dct-zig", "src/main.zig");
-    exe.setTarget(target);
-    exe.setBuildMode(mode);
-    exe.install();
+    const dct_encoder_exe = b.addExecutable("dct-encoder", "src/encoder.zig");
+    dct_encoder_exe.setTarget(target);
+    dct_encoder_exe.setBuildMode(mode);
+    dct_encoder_exe.install();
 
-    const run_cmd = exe.run();
-    run_cmd.step.dependOn(b.getInstallStep());
+    const dct_encoder_run = dct_encoder_exe.run();
+    dct_encoder_run.step.dependOn(b.getInstallStep());
     if (b.args) |args| {
-        run_cmd.addArgs(args);
+        dct_encoder_run.addArgs(args);
     }
 
-    const run_step = b.step("run", "Run the app");
-    run_step.dependOn(&run_cmd.step);
+    const run_step1 = b.step("run-encoder", "Run the encoder");
+    run_step1.dependOn(&dct_encoder_run.step);
 
-    const exe_tests = b.addTest("src/main.zig");
-    exe_tests.setTarget(target);
-    exe_tests.setBuildMode(mode);
+    const dct_decoder_exe = b.addExecutable("dct-decoder", "src/decoder.zig");
+    dct_decoder_exe.setTarget(target);
+    dct_decoder_exe.setBuildMode(mode);
+    dct_decoder_exe.install();
 
-    const test_step = b.step("test", "Run unit tests");
-    test_step.dependOn(&exe_tests.step);
+    const dct_decoder_run = dct_decoder_exe.run();
+    dct_decoder_run.step.dependOn(b.getInstallStep());
+    if (b.args) |args| {
+        dct_decoder_run.addArgs(args);
+    }
+
+    const run_step2 = b.step("run-decoder", "Run the decoder");
+    run_step2.dependOn(&dct_decoder_run.step);
 }
