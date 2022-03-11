@@ -29,13 +29,13 @@ pub fn main() !void {
     // var z: usize = 0;
     while (true) {
         try samples.append(@intToFloat(T, @bitCast(i8, reader.readByte() catch break)));
-        reader.skipBytes(SAMPLE, .{}) catch break;
+        reader.skipBytes(SAMPLE - 1, .{}) catch break;
     }
 
-    const block_size = 64;
+    // const block_size = 64;
     const N = samples.items.len;
 
-    while (samples.items.len % block_size != 0) try samples.append(0);
+    // while (samples.items.len % block_size != 0) try samples.append(0);
 
     // var coeffs_final = try std.ArrayList(T).initCapacity(allocator, N);
 
@@ -46,7 +46,7 @@ pub fn main() !void {
 
     while (coeff_index < N) : (coeff_index += 1) {
         var d = dct(T, samples.items, @intToFloat(T, coeff_index));
-        if (@fabs(d) <= 1) d = 0;
+        if (@fabs(d) <= 10) d = 0;
         const final = @floatToInt(i24, @round(d));
 
         if (final == 0) {

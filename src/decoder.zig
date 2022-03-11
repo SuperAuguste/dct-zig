@@ -35,8 +35,8 @@ pub fn main() !void {
     }
 
     const increments = std.math.pi / @intToFloat(T, N);
-    var x: T = 0;
-    while (x < increments * (@intToFloat(T, N) - 1.0 + 0.5)) : (x += increments / 10) {
+    var x: T = 0.5 * increments;
+    while (x < increments * (@intToFloat(T, N) - 0.5)) : (x += increments / 10) {
         // std.debug.print("{d}", .{idct(T, coeffs.items, x)});
         const value = idct(T, coeffs.items, x);
         // std.debug.print("{d}\n", .{value});
